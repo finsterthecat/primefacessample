@@ -60,6 +60,16 @@ public class CustomerController implements Serializable {
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
+    
+    /**
+     * Frivolous change.
+     */
+    public void create2() {
+        persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("CustomerCreated"));
+        if (!JsfUtil.isValidationFailed()) {
+            items = null;    // Invalidate list of items to trigger re-query.
+        }
+    }
 
     public void update() {
         persist(PersistAction.UPDATE, ResourceBundle.getBundle("/Bundle").getString("CustomerUpdated"));
