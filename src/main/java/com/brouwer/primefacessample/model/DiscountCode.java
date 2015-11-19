@@ -7,6 +7,7 @@ package com.brouwer.primefacessample.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -53,6 +54,12 @@ public class DiscountCode implements Serializable {
 
     public DiscountCode(String discountCode) {
         this.discountCode = discountCode;
+    }
+
+    public DiscountCode(String discountCode, BigDecimal rate) {
+        this.discountCode = discountCode;
+        this.rate = rate;
+        this.customerCollection = new ArrayList<Customer>();
     }
 
     public String getDiscountCode() {
