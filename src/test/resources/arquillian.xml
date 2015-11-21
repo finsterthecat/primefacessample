@@ -7,9 +7,13 @@
         <configuration>
             <property name="adminUser">admin</property>
             <property name="adminPassword">admin</property>
-        </configuration> <!--
-        <engine>
-            <property name="deploymentExportPath">target/deployments</property>
-        </engine> -->
+        </configuration>
+    </container>
+    <container qualifier="glassfish-embedded">
+        <configuration>
+            <property name="resourcesXml">
+                src/test/resources-glassfish-embedded/glassfish-resources.xml
+            </property>
+        </configuration>
     </container>
 </arquillian>

@@ -33,7 +33,7 @@ public class DiscountCodePersistenceTest {
     public static Archive<?> createDeployment() {
         return ShrinkWrap.create(WebArchive.class, "test.war")
                 .addPackage(DiscountCode.class.getPackage())
-                .addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml")
+                .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
@@ -63,8 +63,17 @@ public class DiscountCodePersistenceTest {
     }
 
     @After
-    public void commitTransaction() throws Exception {
+    public void teardownPersistenceTest() throws Exception {
         if (utx.getStatus() != Status.STATUS_MARKED_ROLLBACK)
+            commitTransaction();
+    }
+        
+    private void startTransaction() throws Exception {
+        utx.begin();
+        em.joinTransaction();
+    }
+
+    public void commitTransaction() throws Exception {
             utx.commit();
     }
 
@@ -84,11 +93,6 @@ public class DiscountCodePersistenceTest {
         }
         commitTransaction();
     }
-    
-    private void startTransaction() throws Exception {
-        utx.begin();
-        em.joinTransaction();
-    }
 
     @Test
     public void shouldFindAllDiscountCodesUsingJpqlQuery() throws Exception {
@@ -104,7 +108,10 @@ public class DiscountCodePersistenceTest {
         List<DiscountCode> discountCodes = q.getResultList();
 
         // then
-        System.out.println("Found " + discountCodes.size() + " games (using JPQL):");
+        System.out.println("Found " + discountCodes.size() + " discount codes (using JPQL):");
+        for (DiscountCode dc : discountCodes) {
+            System.out.println(" - " + dc.getDiscountCode());
+        }
         Assert.assertEquals(3, discountCodes.size());
     }
 }
