@@ -6,22 +6,22 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 
-    <ui:composition>
+  <ui:composition>
 
-        <p:dialog id="DiscountCodeCreateDlg" widgetVar="DiscountCodeCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateDiscountCodeTitle}">
-            <h:form id="DiscountCodeCreateForm">
-                <h:panelGroup id="display">
-                    <p:panelGrid columns="2" rendered="#{discountCodeController.selected != null}">
-                        <p:outputLabel value="#{bundle.CreateDiscountCodeLabel_discountCode}" for="discountCode" />
-                        <p:inputText id="discountCode" value="#{discountCodeController.selected.discountCode}" title="#{bundle.CreateDiscountCodeTitle_discountCode}" required="true" requiredMessage="#{bundle.CreateDiscountCodeRequiredMessage_discountCode}"/>
-                        <p:outputLabel value="#{bundle.CreateDiscountCodeLabel_rate}" for="rate" />
-                        <p:inputText id="rate" value="#{discountCodeController.selected.rate}" title="#{bundle.CreateDiscountCodeTitle_rate}" />
-                    </p:panelGrid>
-                    <p:commandButton actionListener="#{discountCodeController.create}" value="#{bundle.Save}" update="display,:DiscountCodeListForm:datalist,:growl" oncomplete="handleSubmit(args,'DiscountCodeCreateDialog');"/>
-                    <p:commandButton value="#{bundle.Cancel}" onclick="DiscountCodeCreateDialog.hide()"/>
-                </h:panelGroup>
-            </h:form>
-        </p:dialog>
+    <p:dialog id="DiscountCodeCreateDlg" widgetVar="DiscountCodeCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateDiscountCodeTitle}">
+      <h:form id="DiscountCodeCreateForm">
+        <h:panelGroup id="display">
+          <p:panelGrid columns="2" rendered="#{discountCodeController.selected != null}">
+            <p:outputLabel value="#{bundle.CreateDiscountCodeLabel_discountCode}" for="discountCode" />
+            <p:inputText id="discountCode" value="#{discountCodeController.selected.discountCode}" title="#{bundle.CreateDiscountCodeTitle_discountCode}" required="true" requiredMessage="#{bundle.CreateDiscountCodeRequiredMessage_discountCode}"/>
+            <p:outputLabel value="#{bundle.CreateDiscountCodeLabel_rate}" for="rate" />
+            <p:inputText id="rate" value="#{discountCodeController.selected.rate}" title="#{bundle.CreateDiscountCodeTitle_rate}" />
+          </p:panelGrid>
+          <p:commandButton actionListener="#{discountCodeController.create}" value="#{bundle.Save}" update="display,:DiscountCodeListForm:datalist,:growl" oncomplete="handleSubmit(args,'DiscountCodeCreateDialog');"/>
+          <p:commandButton value="#{bundle.Cancel}" onclick="DiscountCodeCreateDialog.hide()"/>
+        </h:panelGroup>
+      </h:form>
+    </p:dialog>
 
-    </ui:composition>
+  </ui:composition>
 </html>

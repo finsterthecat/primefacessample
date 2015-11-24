@@ -6,22 +6,22 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 
-    <ui:composition>
+  <ui:composition>
 
-        <p:dialog id="DiscountCodeEditDlg" widgetVar="DiscountCodeEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditDiscountCodeTitle}">
-            <h:form id="DiscountCodeEditForm">
-                <h:panelGroup id="display">
-                    <p:panelGrid columns="2" rendered="#{discountCodeController.selected != null}">
-                        <p:outputLabel value="#{bundle.EditDiscountCodeLabel_discountCode}" for="discountCode" />
-                        <p:inputText id="discountCode" value="#{discountCodeController.selected.discountCode}" title="#{bundle.EditDiscountCodeTitle_discountCode}" required="true" requiredMessage="#{bundle.EditDiscountCodeRequiredMessage_discountCode}"/>
-                        <p:outputLabel value="#{bundle.EditDiscountCodeLabel_rate}" for="rate" />
-                        <p:inputText id="rate" value="#{discountCodeController.selected.rate}" title="#{bundle.EditDiscountCodeTitle_rate}" />
-                    </p:panelGrid>
-                    <p:commandButton actionListener="#{discountCodeController.update}" value="#{bundle.Save}" update="display,:DiscountCodeListForm:datalist,:growl" oncomplete="handleSubmit(args, 'DiscountCodeEditDialog');"/>
-                    <p:commandButton value="#{bundle.Cancel}" onclick="DiscountCodeEditDialog.hide()"/>
-                </h:panelGroup>
-            </h:form>
-        </p:dialog>
+    <p:dialog id="DiscountCodeEditDlg" widgetVar="DiscountCodeEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditDiscountCodeTitle}">
+      <h:form id="DiscountCodeEditForm">
+        <h:panelGroup id="display">
+          <p:panelGrid columns="2" rendered="#{discountCodeController.selected != null}">
+            <p:outputLabel value="#{bundle.EditDiscountCodeLabel_discountCode}" for="discountCode" />
+            <p:inputText id="discountCode" value="#{discountCodeController.selected.discountCode}" title="#{bundle.EditDiscountCodeTitle_discountCode}" required="true" requiredMessage="#{bundle.EditDiscountCodeRequiredMessage_discountCode}"/>
+            <p:outputLabel value="#{bundle.EditDiscountCodeLabel_rate}" for="rate" />
+            <p:inputText id="rate" value="#{discountCodeController.selected.rate}" title="#{bundle.EditDiscountCodeTitle_rate}" />
+          </p:panelGrid>
+          <p:commandButton actionListener="#{discountCodeController.update}" value="#{bundle.Save}" update="display,:DiscountCodeListForm:datalist,:growl" oncomplete="handleSubmit(args, 'DiscountCodeEditDialog');"/>
+          <p:commandButton value="#{bundle.Cancel}" onclick="DiscountCodeEditDialog.hide()"/>
+        </h:panelGroup>
+      </h:form>
+    </p:dialog>
 
-    </ui:composition>
+  </ui:composition>
 </html>

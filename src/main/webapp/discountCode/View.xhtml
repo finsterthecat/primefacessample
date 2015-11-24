@@ -6,21 +6,21 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 
-    <ui:composition>
+  <ui:composition>
 
-        <p:dialog id="DiscountCodeViewDlg" widgetVar="DiscountCodeViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewDiscountCodeTitle}">
-            <h:form id="DiscountCodeViewForm">
-                <h:panelGroup id="display">
-                    <p:panelGrid columns="2" rendered="#{discountCodeController.selected != null}">
-                        <h:outputText value="#{bundle.ViewDiscountCodeLabel_discountCode}"/>
-                        <h:outputText value="#{discountCodeController.selected.discountCode}" title="#{bundle.ViewDiscountCodeTitle_discountCode}"/>
-                        <h:outputText value="#{bundle.ViewDiscountCodeLabel_rate}"/>
-                        <h:outputText value="#{discountCodeController.selected.rate}" title="#{bundle.ViewDiscountCodeTitle_rate}"/>
-                    </p:panelGrid>
-                    <p:commandButton value="#{bundle.Close}" onclick="DiscountCodeViewDialog.hide()"/>
-                </h:panelGroup>
-            </h:form>
-        </p:dialog>
+    <p:dialog id="DiscountCodeViewDlg" widgetVar="DiscountCodeViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewDiscountCodeTitle}">
+      <h:form id="DiscountCodeViewForm">
+        <h:panelGroup id="display">
+          <p:panelGrid columns="2" rendered="#{discountCodeController.selected != null}">
+            <h:outputText value="#{bundle.ViewDiscountCodeLabel_discountCode}"/>
+            <h:outputText value="#{discountCodeController.selected.discountCode}" title="#{bundle.ViewDiscountCodeTitle_discountCode}"/>
+            <h:outputText value="#{bundle.ViewDiscountCodeLabel_rate}"/>
+            <h:outputText value="#{discountCodeController.selected.rate}" title="#{bundle.ViewDiscountCodeTitle_rate}"/>
+          </p:panelGrid>
+          <p:commandButton value="#{bundle.Close}" onclick="DiscountCodeViewDialog.hide()"/>
+        </h:panelGroup>
+      </h:form>
+    </p:dialog>
 
-    </ui:composition>
+  </ui:composition>
 </html>
