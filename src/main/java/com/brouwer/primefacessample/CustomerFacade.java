@@ -17,16 +17,16 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public class CustomerFacade extends AbstractFacade<Customer> {
 
-    @PersistenceContext(unitName = "com.brouwer_primefacessample_war_1.0-SNAPSHOTPU")
-    private EntityManager em;
+  @PersistenceContext(unitName = "com.brouwer_primefacessample_war_1.0-SNAPSHOTPU")
+  private EntityManager em;
 
-    @Override
-    protected EntityManager getEntityManager() {
-        return em;
-    }
+  @Override
+  protected EntityManager getEntityManager() {
+    return em;
+  }
 
-    public CustomerFacade() {
-        super(Customer.class);
-    }
-    
+  public CustomerFacade() {
+    super(Customer.class);
+  }
+
 }

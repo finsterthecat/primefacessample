@@ -17,16 +17,16 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public class MicroMarketFacade extends AbstractFacade<MicroMarket> {
 
-    @PersistenceContext(unitName = "com.brouwer_primefacessample_war_1.0-SNAPSHOTPU")
-    private EntityManager em;
+  @PersistenceContext(unitName = "com.brouwer_primefacessample_war_1.0-SNAPSHOTPU")
+  private EntityManager em;
 
-    @Override
-    protected EntityManager getEntityManager() {
-        return em;
-    }
+  @Override
+  protected EntityManager getEntityManager() {
+    return em;
+  }
 
-    public MicroMarketFacade() {
-        super(MicroMarket.class);
-    }
-    
+  public MicroMarketFacade() {
+    super(MicroMarket.class);
+  }
+
 }
