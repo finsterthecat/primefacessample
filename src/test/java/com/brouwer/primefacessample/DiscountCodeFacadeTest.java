@@ -1,23 +1,21 @@
 package com.brouwer.primefacessample;
 
-import com.brouwer.primefacessample.DiscountCodeController;
-import com.brouwer.primefacessample.DiscountCodeFacade;
 import com.brouwer.primefacessample.model.DiscountCode;
 import com.brouwer.primefacessample.model.util.JsfUtil;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.EJBTransactionRolledbackException;
+import javax.ejb.TransactionRolledbackLocalException;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
-import static org.hamcrest.core.Is.*;
 import org.hamcrest.core.IsInstanceOf;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -122,20 +120,121 @@ public class DiscountCodeFacadeTest {
     assertEquals(new BigDecimal("12.0"), dc.getRate());
   }
   
-  //Rules get ignored. Not sure why. Settle on relying on @Test annotation.
-  //@Rule
-  //public ExpectedException thrown = ExpectedException.none();
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
   
   /**
-   * Should get error on query for a not found discount code: '?'.
-   * Expecting EJBTransactionRolledBackException caused by NoResultException.
+   * Should get error on query for a not found discount code: '?'. Rule based.
    * 
    * @throws Exception 
    */
-  @Test(expected = EJBTransactionRolledbackException.class)
-  public void shouldFailOnNotFoundDiscountCode() throws Exception {
-    //thrown.expect(EJBTransactionRolledbackException.class);
-    //thrown.expectCause(is(IsInstanceOf.<Throwable>instanceOf(NoResultException.class)));
+  @Test
+  public void shouldFailOnNotFoundDiscountCodeRuleBased() throws Exception {
+    thrown.expect(IsInstanceOf.<Throwable>instanceOf(EJBTransactionRolledbackException.class));
     discountCodeFacade.findByDiscountCode("?");
+  }
+
+  /**
+   * Should get error on query for a not found discount code: '?'. Assertions in try-catch.
+   * Expecting EJBTransactionRolledBackException caused by TransactionRolledbackLocalException
+   * caused by NoResultException. Of course, this may differ according to different JPA implementations.
+   * 
+   * @throws Exception 
+   */
+  @Test
+  public void shouldFailOnNotFoundDiscountCodeTryCatch() throws Exception {
+    //Alternate means of catching NoResultException
+    try {
+      discountCodeFacade.findByDiscountCode("?");
+      fail("Should have thrown EJBTransactionRolledbackException");
+    }
+    catch (Exception e) {
+      assertThat(e, IsInstanceOf.<Throwable>instanceOf(EJBTransactionRolledbackException.class));
+      //getCause() just gets original exception: EJBTransactionRolledBackException. getCause().getCause() does it.
+      assertThat(e.getCause(), IsInstanceOf.<Throwable>instanceOf(TransactionRolledbackLocalException.class));
+      assertThat(e.getCause().getCause(), IsInstanceOf.<Throwable>instanceOf(NoResultException.class));
+    }
+  }
+
+  /**
+   * Should get error on query for a not found discount code: '?'. Declared in @Test annotation.
+   * @throws Exception 
+   */
+  @Test(expected=EJBTransactionRolledbackException.class)
+  public void shouldFailOnNotFoundDiscountCodeDeclarative() throws Exception {
+    discountCodeFacade.findByDiscountCode("?");
+  }
+  
+  /**
+   * Remove needs to work.
+   * @throws Exception 
+   */
+  @Test(expected=EJBException.class)
+  public void shouldRemoveAndItsGone() throws Exception {
+    DiscountCode dc = discountCodeFacade.findByDiscountCode("X");
+    discountCodeFacade.remove(dc);
+    discountCodeFacade.getEntityManager().flush();    //Why necessary??
+    discountCodeFacade.findByDiscountCode("X");
+  }
+  
+  /**
+   * Insert should work too.
+   * @throws Exception 
+   */  
+  @Test
+  public void shouldInsertAndItsFound() throws Exception {
+    DiscountCode dc = new DiscountCode("W", new BigDecimal("10.1"));
+    discountCodeFacade.create(dc);
+    DiscountCode dc2 = discountCodeFacade.findByDiscountCode("W");
+    assertEquals(new BigDecimal("10.1"), dc2.getRate());
+  }
+  
+  /**
+   * Find all returns all the codes.
+   * @throws Exception 
+   */  
+  @Test
+  public void shouldFindAll() throws Exception {
+    List<DiscountCode> dcs = discountCodeFacade.findAll();
+    assertEquals(3, dcs.size());
+  }
+
+  /**
+   * Find all returns all the codes.
+   * @throws Exception 
+   */  
+  @Test
+  public void shouldFindRange() throws Exception {
+    List<DiscountCode> dcs = discountCodeFacade.findRange(new int[]{1,2});
+    assertEquals(2, dcs.size());
+  }
+
+  /**
+   * Count returns the count of discount codes.
+   * @throws Exception 
+   */  
+  @Test
+  public void shouldGetCount() throws Exception {
+    int count = discountCodeFacade.count();
+    List<DiscountCode> dcs = discountCodeFacade.findAll();
+    for (DiscountCode dc : dcs) {
+      System.out.println("shouldGetCount: " + dc.getDiscountCode() + ":" + dc.getRate());
+    }
+    assertEquals(count, dcs.size());
+  }
+
+  @Test
+  public void shouldFind() throws Exception {
+    DiscountCode dc = discountCodeFacade.find("Z");
+    assertEquals(new BigDecimal("9.0"), dc.getRate());
+  }
+  
+  @Test
+  public void shouldEditChangeValue() throws Exception {
+    DiscountCode dc = discountCodeFacade.find("Z");
+    dc.setRate(dc.getRate().add(BigDecimal.ONE));
+    discountCodeFacade.edit(dc);
+    DiscountCode dc2 = discountCodeFacade.find("Z");
+    assertEquals(dc.getRate(), dc2.getRate());
   }
 }
