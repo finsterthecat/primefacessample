@@ -1,19 +1,24 @@
-package com.brouwer.primefacessample.model;
+package com.brouwer.primefacessample;
 
 import com.brouwer.primefacessample.DiscountCodeController;
 import com.brouwer.primefacessample.DiscountCodeFacade;
+import com.brouwer.primefacessample.model.DiscountCode;
 import com.brouwer.primefacessample.model.util.JsfUtil;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.ejb.EJBTransactionRolledbackException;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
+import static org.hamcrest.core.Is.*;
+import org.hamcrest.core.IsInstanceOf;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -23,7 +28,9 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
 /**
@@ -32,7 +39,7 @@ import org.junit.runner.RunWith;
  * @author tonybrouwer
  */
 @RunWith(Arquillian.class)
-public class DiscountCodePersistenceTest {
+public class DiscountCodeFacadeTest {
 
   @EJB
   DiscountCodeFacade discountCodeFacade;
@@ -107,24 +114,28 @@ public class DiscountCodePersistenceTest {
   }
 
   @Test
-  public void shouldFindAllDiscountCodesUsingJpqlQuery() throws Exception {
-    // given
-    String fetchingAllDiscountCodesInJpql = "select d from DiscountCode d"
-            + " where d.discountCode in :codes "
-            + " order by d.discountCode";
-
-    // when
-    System.out.println("Selecting (using JPQL)...");
-    TypedQuery<DiscountCode> q = em.createQuery(fetchingAllDiscountCodesInJpql, DiscountCode.class);
-    q.setParameter("codes", java.util.Arrays.asList(DISCOUNT_CODES));
-    List<DiscountCode> discountCodes = q.getResultList();
-
-    // then
-    System.out.println("Found " + discountCodes.size() + " discount codes (using JPQL):");
-    for (DiscountCode dc : discountCodes) {
-      System.out.println(" - " + dc.getDiscountCode());
-    }
-    assertEquals(3, discountCodes.size());
+  /**
+   * Should find discount code if it exists.
+   */
+  public void shouldFindDiscountCodeThatExists() throws Exception {
+    DiscountCode dc = discountCodeFacade.findByDiscountCode("X");
+    assertEquals(new BigDecimal("12.0"), dc.getRate());
   }
-
+  
+  //Rules get ignored. Not sure why. Settle on relying on @Test annotation.
+  //@Rule
+  //public ExpectedException thrown = ExpectedException.none();
+  
+  /**
+   * Should get error on query for a not found discount code: '?'.
+   * Expecting EJBTransactionRolledBackException caused by NoResultException.
+   * 
+   * @throws Exception 
+   */
+  @Test(expected = EJBTransactionRolledbackException.class)
+  public void shouldFailOnNotFoundDiscountCode() throws Exception {
+    //thrown.expect(EJBTransactionRolledbackException.class);
+    //thrown.expectCause(is(IsInstanceOf.<Throwable>instanceOf(NoResultException.class)));
+    discountCodeFacade.findByDiscountCode("?");
+  }
 }

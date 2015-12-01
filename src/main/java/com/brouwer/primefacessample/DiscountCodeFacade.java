@@ -10,6 +10,7 @@ import com.brouwer.primefacessample.model.DiscountCode;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 /**
  * Discount Code Facade.
@@ -31,4 +32,11 @@ public class DiscountCodeFacade extends AbstractFacade<DiscountCode> {
     super(DiscountCode.class);
   }
 
+  public DiscountCode findByDiscountCode(String code) {
+    TypedQuery<DiscountCode> query  =
+            this.getEntityManager().createNamedQuery(
+                    "DiscountCode.findByDiscountCode", DiscountCode.class);
+    query.setParameter("discountCode", code);
+    return query.getSingleResult();
+  }
 }
