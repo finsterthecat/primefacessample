@@ -125,10 +125,19 @@
       <artifactId>arquillian-junit-container</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-all</artifactId>
+        <version>1.10.19</version>
+        <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
     <testResources>
+      <testResource>
+        <directory>src/main/resources</directory>
+      </testResource>
       <testResource>
         <directory>src/test/resources</directory>
       </testResource>

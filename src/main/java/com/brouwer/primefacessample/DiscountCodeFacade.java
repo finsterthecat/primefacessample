@@ -21,7 +21,7 @@ import javax.persistence.TypedQuery;
 public class DiscountCodeFacade extends AbstractFacade<DiscountCode> {
 
   @PersistenceContext(unitName = "com.brouwer_primefacessample_war_1.0-SNAPSHOTPU")
-  private EntityManager em;
+  EntityManager em;
 
   @Override
   protected EntityManager getEntityManager() {

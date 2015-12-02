@@ -23,7 +23,7 @@ import javax.faces.convert.FacesConverter;
 public class DiscountCodeController implements Serializable {
 
   @EJB
-  private com.brouwer.primefacessample.DiscountCodeFacade ejbFacade;
+  DiscountCodeFacade ejbFacade;
   private List<DiscountCode> items = null;
   private DiscountCode selected;
 
@@ -63,7 +63,7 @@ public class DiscountCodeController implements Serializable {
    * Create a Discount Code in the database.
    */
   public void create() {
-    persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle")
+    persist(PersistAction.CREATE, ResourceBundle.getBundle("Bundle")
             .getString("DiscountCodeCreated"));
     if (!JsfUtil.isValidationFailed()) {
       items = null;    // Invalidate list of items to trigger re-query.
@@ -74,7 +74,7 @@ public class DiscountCodeController implements Serializable {
    * Update an existing Discount Code.
    */
   public void update() {
-    persist(PersistAction.UPDATE, ResourceBundle.getBundle("/Bundle")
+    persist(PersistAction.UPDATE, ResourceBundle.getBundle("Bundle")
             .getString("DiscountCodeUpdated"));
   }
 
@@ -82,7 +82,7 @@ public class DiscountCodeController implements Serializable {
    * Destroy a discount code in the database.
    */
   public void destroy() {
-    persist(PersistAction.DELETE, ResourceBundle.getBundle("/Bundle")
+    persist(PersistAction.DELETE, ResourceBundle.getBundle("Bundle")
             .getString("DiscountCodeDeleted"));
     if (!JsfUtil.isValidationFailed()) {
       selected = null; // Remove selection
@@ -126,7 +126,7 @@ public class DiscountCodeController implements Serializable {
         }
       } catch (Exception ex) {
         Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-        JsfUtil.addErrorMessage(ex, ResourceBundle.getBundle("/Bundle")
+        JsfUtil.addErrorMessage(ex, ResourceBundle.getBundle("Bundle")
                 .getString("PersistenceErrorOccured"));
       }
     }
