@@ -6,7 +6,7 @@
 package com.brouwer.primefacessample;
 
 import com.brouwer.primefacessample.model.DiscountCode;
-import com.brouwer.util.ContextMocker;
+import com.brouwer.util.FacesContextMocker;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,28 +56,27 @@ public class DiscountCodeControllerTest {
   
   @Test
   public void shouldCreate() throws Exception {
-    FacesContext context = ContextMocker.mockFacesContext();
+    FacesContext context = null;
     
     try {
-      initializeFacesContext(context);
+      context = initializeFacesContext();
       this.cut.create();
       verify(this.cut.ejbFacade).edit(TEST_DISCOUNT_CODE);
     } finally {
-      context.release();
+      if (context != null) context.release();
     }
     
   }
 
   @Test
   public void shouldRemove() throws Exception {
-    FacesContext context = ContextMocker.mockFacesContext();
-    
+    FacesContext context = null;
     try {
-      initializeFacesContext(context);
+      context = initializeFacesContext();
       this.cut.destroy();
       verify(this.cut.ejbFacade).remove(TEST_DISCOUNT_CODE);
     } finally {
-      context.release();
+      if (context != null) context.release();
     }
     
   }
@@ -89,10 +88,12 @@ public class DiscountCodeControllerTest {
    * 
    * @param context 
    */
-  private void initializeFacesContext(FacesContext context) {
+  private FacesContext initializeFacesContext() {
+    FacesContext context = FacesContextMocker.mockFacesContext();
     Map<String, String> requestParameters = new HashMap<>();
     ExternalContext ext = mock(ExternalContext.class);
     when(context.getExternalContext()).thenReturn(ext);
     when(ext.getRequestParameterMap()).thenReturn(requestParameters);
+    return context;
   }
 }

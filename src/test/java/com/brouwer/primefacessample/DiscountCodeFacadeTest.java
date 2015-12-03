@@ -7,8 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
-import javax.ejb.EJBTransactionRolledbackException;
-import javax.ejb.TransactionRolledbackLocalException;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -58,6 +56,13 @@ public class DiscountCodeFacadeTest {
     "Z"
   };
 
+  private static final String[] DELETE_DISCOUNT_CODES = {
+    "W",
+    "X",
+    "Y",
+    "Z"
+  };
+
   private static final BigDecimal[] RATES = {
     new BigDecimal("12.0"),
     new BigDecimal("10.0"),
@@ -74,13 +79,12 @@ public class DiscountCodeFacadeTest {
   public void preparePersistenceTest() throws Exception {
     clearData();
     insertData();
-    startTransaction();
   }
 
   @After
   public void teardownPersistenceTest() throws Exception {
     if (utx.getStatus() != Status.STATUS_MARKED_ROLLBACK) {
-      commitTransaction();
+      clearData();
     }
   }
 
@@ -96,7 +100,7 @@ public class DiscountCodeFacadeTest {
   private void clearData() throws Exception {
     startTransaction();
     Query q = em.createQuery("delete from DiscountCode d where d.discountCode in :codes");
-    q.setParameter("codes", Arrays.asList(DISCOUNT_CODES));
+    q.setParameter("codes", Arrays.asList(DELETE_DISCOUNT_CODES));
     q.executeUpdate();
     commitTransaction();
     em.clear();
@@ -130,7 +134,8 @@ public class DiscountCodeFacadeTest {
    */
   @Test
   public void shouldFailOnNotFoundDiscountCodeRuleBased() throws Exception {
-    thrown.expect(IsInstanceOf.<Throwable>instanceOf(EJBTransactionRolledbackException.class));
+    thrown.expect(IsInstanceOf.<Throwable>instanceOf(EJBException.class));
+    thrown.expectCause(IsInstanceOf.<Throwable>instanceOf(NoResultException.class));
     discountCodeFacade.findByDiscountCode("?");
   }
 
@@ -149,10 +154,8 @@ public class DiscountCodeFacadeTest {
       fail("Should have thrown EJBTransactionRolledbackException");
     }
     catch (Exception e) {
-      assertThat(e, IsInstanceOf.<Throwable>instanceOf(EJBTransactionRolledbackException.class));
-      //getCause() just gets original exception: EJBTransactionRolledBackException. getCause().getCause() does it.
-      assertThat(e.getCause(), IsInstanceOf.<Throwable>instanceOf(TransactionRolledbackLocalException.class));
-      assertThat(e.getCause().getCause(), IsInstanceOf.<Throwable>instanceOf(NoResultException.class));
+      assertThat(e, IsInstanceOf.<Throwable>instanceOf(EJBException.class));
+      assertThat(e.getCause(), IsInstanceOf.<Throwable>instanceOf(NoResultException.class));
     }
   }
 
@@ -160,7 +163,7 @@ public class DiscountCodeFacadeTest {
    * Should get error on query for a not found discount code: '?'. Declared in @Test annotation.
    * @throws Exception 
    */
-  @Test(expected=EJBTransactionRolledbackException.class)
+  @Test(expected=EJBException.class)
   public void shouldFailOnNotFoundDiscountCodeDeclarative() throws Exception {
     discountCodeFacade.findByDiscountCode("?");
   }
@@ -173,7 +176,6 @@ public class DiscountCodeFacadeTest {
   public void shouldRemoveAndItsGone() throws Exception {
     DiscountCode dc = discountCodeFacade.findByDiscountCode("X");
     discountCodeFacade.remove(dc);
-    discountCodeFacade.getEntityManager().flush();    //Why necessary??
     discountCodeFacade.findByDiscountCode("X");
   }
   
@@ -196,7 +198,7 @@ public class DiscountCodeFacadeTest {
   @Test
   public void shouldFindAll() throws Exception {
     List<DiscountCode> dcs = discountCodeFacade.findAll();
-    assertEquals(3, dcs.size());
+    assertEquals(7, dcs.size()); //Must include the 4 discount codes already there, plus 3 inserted prior to every test: 7
   }
 
   /**

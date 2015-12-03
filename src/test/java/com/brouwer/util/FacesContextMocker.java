@@ -6,8 +6,8 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-public abstract class ContextMocker extends FacesContext {
-  private ContextMocker() {
+public abstract class FacesContextMocker extends FacesContext {
+  private FacesContextMocker() {
   }
 
   private static final Release RELEASE = new Release();
