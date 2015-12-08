@@ -39,7 +39,7 @@ public class DiscountCodeFacadeTest {
 
   @EJB
   DiscountCodeFacade discountCodeFacade;
-  
+
   @Deployment
   public static Archive<?> createDeployment() {
     return ShrinkWrap.create(WebArchive.class, "test.war")
@@ -83,9 +83,7 @@ public class DiscountCodeFacadeTest {
 
   @After
   public void teardownPersistenceTest() throws Exception {
-    if (utx.getStatus() != Status.STATUS_MARKED_ROLLBACK) {
-      clearData();
-    }
+    clearData();
   }
 
   private void startTransaction() throws Exception {
@@ -123,14 +121,14 @@ public class DiscountCodeFacadeTest {
     DiscountCode dc = discountCodeFacade.findByDiscountCode("X");
     assertEquals(new BigDecimal("12.0"), dc.getRate());
   }
-  
+
   @Rule
   public ExpectedException thrown = ExpectedException.none();
-  
+
   /**
    * Should get error on query for a not found discount code: '?'. Rule based.
-   * 
-   * @throws Exception 
+   *
+   * @throws Exception
    */
   @Test
   public void shouldFailOnNotFoundDiscountCodeRuleBased() throws Exception {
@@ -140,11 +138,12 @@ public class DiscountCodeFacadeTest {
   }
 
   /**
-   * Should get error on query for a not found discount code: '?'. Assertions in try-catch.
-   * Expecting EJBTransactionRolledBackException caused by TransactionRolledbackLocalException
-   * caused by NoResultException. Of course, this may differ according to different JPA implementations.
-   * 
-   * @throws Exception 
+   * Should get error on query for a not found discount code: '?'. Assertions in
+   * try-catch. Expecting EJBTransactionRolledBackException caused by
+   * TransactionRolledbackLocalException caused by NoResultException. Of course,
+   * this may differ according to different JPA implementations.
+   *
+   * @throws Exception
    */
   @Test
   public void shouldFailOnNotFoundDiscountCodeTryCatch() throws Exception {
@@ -152,37 +151,40 @@ public class DiscountCodeFacadeTest {
     try {
       discountCodeFacade.findByDiscountCode("?");
       fail("Should have thrown EJBTransactionRolledbackException");
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       assertThat(e, IsInstanceOf.<Throwable>instanceOf(EJBException.class));
       assertThat(e.getCause(), IsInstanceOf.<Throwable>instanceOf(NoResultException.class));
     }
   }
 
   /**
-   * Should get error on query for a not found discount code: '?'. Declared in @Test annotation.
-   * @throws Exception 
+   * Should get error on query for a not found discount code: '?'. Declared in
+   * @Test annotation.
+   *
+   * @throws Exception
    */
-  @Test(expected=EJBException.class)
+  @Test(expected = EJBException.class)
   public void shouldFailOnNotFoundDiscountCodeDeclarative() throws Exception {
     discountCodeFacade.findByDiscountCode("?");
   }
-  
+
   /**
    * Remove needs to work.
-   * @throws Exception 
+   *
+   * @throws Exception
    */
-  @Test(expected=EJBException.class)
+  @Test(expected = EJBException.class)
   public void shouldRemoveAndItsGone() throws Exception {
     DiscountCode dc = discountCodeFacade.findByDiscountCode("X");
     discountCodeFacade.remove(dc);
     discountCodeFacade.findByDiscountCode("X");
   }
-  
+
   /**
    * Insert should work too.
-   * @throws Exception 
-   */  
+   *
+   * @throws Exception
+   */
   @Test
   public void shouldInsertAndItsFound() throws Exception {
     DiscountCode dc = new DiscountCode("W", new BigDecimal("10.1"));
@@ -190,11 +192,12 @@ public class DiscountCodeFacadeTest {
     DiscountCode dc2 = discountCodeFacade.findByDiscountCode("W");
     assertEquals(new BigDecimal("10.1"), dc2.getRate());
   }
-  
+
   /**
    * Find all returns all the codes.
-   * @throws Exception 
-   */  
+   *
+   * @throws Exception
+   */
   @Test
   public void shouldFindAll() throws Exception {
     List<DiscountCode> dcs = discountCodeFacade.findAll();
@@ -202,23 +205,25 @@ public class DiscountCodeFacadeTest {
     //OTOH embedded tests will return 3 since they start with an empty db
     //TODO do something here that's not hopelessly kludgey
     int size = dcs.size() == 3 ? 7 : dcs.size();
-    assertEquals(7, size); 
+    assertEquals(7, size);
   }
 
   /**
-   * Find all returns all the codes.
-   * @throws Exception 
-   */  
+   * Find range returns a range of the codes.
+   *
+   * @throws Exception
+   */
   @Test
   public void shouldFindRange() throws Exception {
-    List<DiscountCode> dcs = discountCodeFacade.findRange(new int[]{1,2});
+    List<DiscountCode> dcs = discountCodeFacade.findRange(new int[]{1, 2});
     assertEquals(2, dcs.size());
   }
 
   /**
    * Count returns the count of discount codes.
-   * @throws Exception 
-   */  
+   *
+   * @throws Exception
+   */
   @Test
   public void shouldGetCount() throws Exception {
     int count = discountCodeFacade.count();
@@ -234,7 +239,7 @@ public class DiscountCodeFacadeTest {
     DiscountCode dc = discountCodeFacade.find("Z");
     assertEquals(new BigDecimal("9.0"), dc.getRate());
   }
-  
+
   @Test
   public void shouldEditChangeValue() throws Exception {
     DiscountCode dc = discountCodeFacade.find("Z");
