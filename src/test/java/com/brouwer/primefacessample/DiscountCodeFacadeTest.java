@@ -128,7 +128,7 @@ public class DiscountCodeFacadeTest {
   /**
    * Should get error on query for a not found discount code: '?'. Rule based.
    *
-   * @throws Exception
+   * @throws Exception the exception
    */
   @Test
   public void shouldFailOnNotFoundDiscountCodeRuleBased() throws Exception {
@@ -143,7 +143,7 @@ public class DiscountCodeFacadeTest {
    * TransactionRolledbackLocalException caused by NoResultException. Of course,
    * this may differ according to different JPA implementations.
    *
-   * @throws Exception
+   * @throws Exception the exception
    */
   @Test
   public void shouldFailOnNotFoundDiscountCodeTryCatch() throws Exception {
@@ -159,9 +159,9 @@ public class DiscountCodeFacadeTest {
 
   /**
    * Should get error on query for a not found discount code: '?'. Declared in
-   * @Test annotation.
+   * Test annotation.
    *
-   * @throws Exception
+   * @throws Exception the exception
    */
   @Test(expected = EJBException.class)
   public void shouldFailOnNotFoundDiscountCodeDeclarative() throws Exception {
@@ -171,7 +171,7 @@ public class DiscountCodeFacadeTest {
   /**
    * Remove needs to work.
    *
-   * @throws Exception
+   * @throws Exception the exception
    */
   @Test(expected = EJBException.class)
   public void shouldRemoveAndItsGone() throws Exception {
@@ -183,7 +183,7 @@ public class DiscountCodeFacadeTest {
   /**
    * Insert should work too.
    *
-   * @throws Exception
+   * @throws Exception the exception
    */
   @Test
   public void shouldInsertAndItsFound() throws Exception {
@@ -196,7 +196,7 @@ public class DiscountCodeFacadeTest {
   /**
    * Find all returns all the codes.
    *
-   * @throws Exception
+   * @throws Exception the exception
    */
   @Test
   public void shouldFindAll() throws Exception {
@@ -211,7 +211,7 @@ public class DiscountCodeFacadeTest {
   /**
    * Find range returns a range of the codes.
    *
-   * @throws Exception
+   * @throws Exception the exception
    */
   @Test
   public void shouldFindRange() throws Exception {
@@ -222,7 +222,7 @@ public class DiscountCodeFacadeTest {
   /**
    * Count returns the count of discount codes.
    *
-   * @throws Exception
+   * @throws Exception the exception
    */
   @Test
   public void shouldGetCount() throws Exception {
