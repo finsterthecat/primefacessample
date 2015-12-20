@@ -1,4 +1,6 @@
 # primefacessample
 Using this to play around with Jenkins. It is an auto-genned primefaces app.
 
-Now uses Cobertura for test code coverage, checkstyle for static code analysis
+Now uses Cobertura for test code coverage, checkstyle for static code analysis.
+
+Arquillian used to perform in-container unit testing.
